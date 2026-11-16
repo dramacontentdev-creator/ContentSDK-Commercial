@@ -7,7 +7,7 @@ PODS:
   - Ads-Global/PangleSDK (8.2.1.0)
   - Ads-Global/TikTokBusinessSDK (8.2.1.0)
   - AppLovinSDK (13.6.4)
-  - ContentSdk (1.2.0-SNAPSHOT):
+  - ContentSdk (1.2.0):
     - Google-Mobile-Ads-SDK (~> 13.0)
     - GoogleMobileAdsMediationAppLovin (= 13.6.4.0)
     - GoogleMobileAdsMediationFacebook (= 6.22.0.0)
@@ -137,7 +137,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Ads-Global: 46a918b0dfddf82137187d73d8ec40b5d49cf77e
   AppLovinSDK: 730be87bac90c5b0f7d507c3a2530213f7685370
-  ContentSdk: 0e4ad7b06b87fb0a4fd5cf40ff9a08fa1dc282bc
+  ContentSdk: 6d725d8079b198dbc6f2ec54a180f6295ae439f6
   FBAudienceNetwork: b05c65487114aa3bf3a68e865c60937a9fb03b69
   Google-Mobile-Ads-SDK: cec761d0da669c462bcc19cd16c747498b9f39f7
   GoogleMobileAdsMediationAppLovin: bd2c7430ec7cc319f65139f18edcf48694d0bf81

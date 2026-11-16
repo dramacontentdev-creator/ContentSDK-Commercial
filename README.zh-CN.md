@@ -1,18 +1,51 @@
-# Content SDK Demo：商业版
+# Content SDK Demo
 
-[English](README.md) | 中文 · [纯净版 demo](https://github.com/dramacontentdev-creator/ContentSDK-Pure)
+[English](README.md) | 中文
 
-本仓库不包含 SDK。按版本和平台向 SDK 提供方获取 SDK 包，再按下面「快速开始」放到指定位置。
+演示 Content SDK 在 Android 和 iOS 上的接入：短剧首页、播放器、播放控制、播放页自定义、激励广告解锁和广告事件。代码里标好了接入步骤，可以直接复制到自己的应用。
 
-SDK 展示激励视频解锁和剧集间插屏。这里使用商业版 SDK 包。
+本仓库不包含 SDK。向 SDK 提供方获取 SDK 包，按「快速开始」放到指定位置即可运行。
 
-## 快速开始：Android
+## 仓库结构
+
+```text
+android/                         Android 工程（用 Android Studio 打开这个目录）
+  settings.gradle.kts            依赖仓库
+  app/
+    build.gradle.kts             引入 AAR 和依赖脚本
+    libs/                        放 SDK 的 AAR（不提交）
+    content-sdk-dependencies.gradle   SDK 包里的依赖脚本（不提交）
+    src/main/kotlin/com/lc/content/sdk/demo/
+      DemoApplication.kt         初始化
+      DemoEdition.kt             App ID / App Secret、启动
+      MainActivity.kt            打开 SDK 页面
+      catalog/                   API 说明和可复制的示例
+      customization/             播放页自定义（Compose 和 View 两种写法）
+      lab/                       播放器实验室
+      ui/                        demo 自己的界面，接入时不需要
+ios/                             iOS 工程
+  Podfile                        引入 SDK Pod
+  ContentSdk/                    放 iOS SDK 包（不提交）
+  ContentSdkDemo.xcworkspace     pod install 后生成，用它打开工程
+  ContentSdkDemo/
+    ContentSdkDemoApp.swift      初始化
+    DemoEdition.swift            App ID / App Secret、启动
+    SdkIntegration.swift         打开 SDK 页面
+    Catalog/                     API 说明和可复制的示例
+    Customization/               播放页自定义（SwiftUI 和 UIKit 两种写法）
+    Lab/                         播放器实验室
+    UI/                          demo 自己的界面，接入时不需要
+```
+
+## 快速开始
+
+### Android
 
 1. 从 `ContentSdk-Android-YOUR_SDK_VERSION-release` 中把 `ContentSdk-YOUR_SDK_VERSION.aar` 复制到 `android/app/libs/`。
 2. 把同一个包里的 `content-sdk-dependencies.gradle` 复制到 `android/app/`。
 3. 用 Android Studio 打开 `android/`，运行 `app`。
 
-## 快速开始：iOS
+### iOS
 
 1. 把 `ContentSdk-iOS-YOUR_SDK_VERSION-release` 里的全部内容复制到 `ios/ContentSdk/`。
 2. 在 `ios/` 目录执行 `pod install`。
@@ -20,96 +53,81 @@ SDK 展示激励视频解锁和剧集间插屏。这里使用商业版 SDK 包�
 
 在真机上运行时，新建 `ios/Signing.local.xcconfig`，写入 `DEVELOPMENT_TEAM = YOUR_TEAM_ID`（参见 `ios/Signing.xcconfig`）。这个文件不会提交到 git；如果在 Xcode 的 Signing 页里选 team，它会被写进工程文件。
 
-## 接入你自己的应用
+> AAR、依赖脚本和 iOS SDK 包必须来自同一个 SDK 包，版本一致。
 
-代码中每个步骤都标有 `Content SDK - integration Step N`，按顺序抄过去。Android 和 iOS 的步骤分别编号，请按列从上往下看（iOS 一列没有依赖这一步）：
+## 接入到你的应用
+
+代码中每个步骤都标有 `Content SDK - integration Step N`，按顺序复制。Android 和 iOS 分别编号：
 
 | 步骤 | Android | iOS |
 |---|---|---|
-| 1 | `settings.gradle.kts`：依赖仓库，包括广告依赖仓库 | `Podfile`：`pod 'ContentSdk'` |
-| 2 | `app/build.gradle.kts`：AAR 和依赖 | `ContentSdkDemoApp.swift`：初始化 |
+| 1 | `settings.gradle.kts`：依赖仓库，包括广告 SDK 仓库 | `Podfile`：`pod 'ContentSdk'` |
+| 2 | `app/build.gradle.kts`：AAR 和依赖脚本 | `ContentSdkDemoApp.swift`：初始化 |
 | 3 | `DemoApplication.kt`：初始化 | `DemoEdition.swift`：广告同意 + 启动 |
 | 4 | `DemoEdition.kt`：广告同意 + 启动 | `SdkIntegration.swift`：打开 SDK 页面 |
 | 5 | `MainActivity.kt`：打开 SDK 页面 | |
-| A（仅商业版） | `AndroidManifest.xml`：AdMob Application ID | `Info.plist`：AdMob Application ID 和 SKAdNetworkItems |
+| A | `AndroidManifest.xml`：AdMob Application ID | `Info.plist`：AdMob Application ID 和 SKAdNetworkItems |
 
 A 步要和依赖步骤一起做：没有 AdMob Application ID，应用启动时就会停止运行。
 
-然后换成自己的值：
+然后换成你自己的值：
 
-- App ID / App Secret：在 [https://open.lucky-chick.com](https://open.lucky-chick.com) 获取，填到 `DemoEdition.kt` / `DemoEdition.swift` 的 `SdkConfig` 里。demo 里的值只能用于 demo。
-- AdMob Application ID（`AndroidManifest.xml` / `Info.plist`）。demo 用的是 Google 测试 ID。
+- App ID / App Secret：在 [https://open.lucky-chick.com](https://open.lucky-chick.com) 获取，填到 `DemoEdition.kt` / `DemoEdition.swift` 的 `SdkConfig` 里。
+- AdMob Application ID：`AndroidManifest.xml` / `Info.plist`，demo 用的是 Google 测试 ID。
 - iOS：把 SDK 包里的 `SKAdNetworkItems.plist` 合并到自己的 `Info.plist`。
 
-其他调用都是可选的，用 SDK 默认值即可：
+## 功能说明
 
-- `customization/`：用自己的界面替换 SDK 播放页的一部分。Android 先看 `CustomRegions.kt`，里面是 SDK 调用和详细说明；`compose/` 和 `view/` 是同一套简介区、控制区和选集列表的 Compose 与 Android View 两种写法；`PlayerFeed.kt` 把控制器状态转成它们要画的数据。iOS 对应 `CustomRegions.swift`、`SwiftUI/`、`UIKit/`、`PlayerFeed.swift`；iOS 上页面导航由应用自己管理，所以自定义简介区通过 `PlayerPageCloser` 关闭播放页。在演示首页选择样式（SDK 默认、Compose / SwiftUI、View / UIKit），再打开播放页，按你的界面技术栈选一个复制即可。商业版里样式还会替换锁定剧集的解锁页（`customization/unlock/`）：界面是你的，广告和奖励由 SDK 的 `unlockWithRewardedAd` 完成。
-- `lab/`（Android）/ `Lab/`（iOS）：播放器实验室。SDK 播放页铺满屏幕，demo 在上面叠加自己的控制面板：播放 / 暂停、拖动进度、倍速、清晰度、选集；播放选项；页面样式；`autoHide`、`setRegionVisible`、`setControlsHeld`；以及每次调用和播放事件的日志。它的 SDK 调用都在 `LabActions.kt` / `LabActions.swift`。从演示首页进入。
-- `catalog/SdkApiCatalog.kt` / `SdkApiCatalog.swift`：两个版本都有的接口和可直接复制的示例（播放控制、播放选项、播放记录、播放页区域、自建播放器、收入回传等）。
-- `catalog/EditionApiCatalog.kt` / `EditionApiCatalog.swift`：商业版独有的接口：广告同意、广告事件，以及用 `unlockWithRewardedAd`、`getRewardedAdProgress` 自定义解锁界面。
-- `ui/`（Android 和 iOS）：只是演示界面。
+运行后在 demo 首页可以打开以下功能：
 
-## 接口索引
+- **SDK 页面**：短剧首页和播放器，由 SDK 提供完整界面。
+- **播放页样式**：在首页选择 SDK 默认、Compose / SwiftUI 或 View / UIKit，再打开播放器，可以看到用自己的界面替换播放页的简介区、控制区和选集列表（`customization/`）。选了自定义样式后，锁定剧集的解锁页也换成 demo 自己的界面（`customization/unlock/`），广告和奖励仍由 SDK 的 `unlockWithRewardedAd` 完成。
+- **播放器实验室**：SDK 播放页铺满屏幕，demo 在上面叠加自己的控制面板，演示播放 / 暂停、拖动进度、倍速、清晰度、选集、播放选项、区域显示控制，并记录每次调用和播放事件（`lab/` / `Lab/`，SDK 调用集中在 `LabActions.kt` / `LabActions.swift`）。
+- **广告解锁**：遇到锁定剧集时，SDK 显示激励广告解锁层，看完广告后自动继续播放。
 
-节号指 `SdkApiCatalog`（Android 为 `catalog/SdkApiCatalog.kt`，iOS 为 `Catalog/SdkApiCatalog.swift`），两个平台的节号一致。
+## API 说明
 
-| 接口 | 位置 | 用途 |
+位置一列的 § 是 `SdkApiCatalog`（Android `catalog/SdkApiCatalog.kt`，iOS `Catalog/SdkApiCatalog.swift`）里的节号，两个平台一致。
+
+| API | 位置 | 用途 |
 |---|---|---|
-| `initialize` / `start` | 上面的接入步骤 | 必需的初始化 |
-| `setLoggingEnabled` | §1 | SDK 日志 |
-| `setStrategy` | §2 | 资源策略 |
-| `setColorPalette` / `resetColorPalette`、`setSubtitleStyle` / `resetSubtitleStyle` | §3 | 主题颜色和字幕 |
-| Android：`openDramaPlayerPage`、`createDramaHomeFragment`、`createDramaPlayerFragment`、`DramaHomeScreen`、`DramaPlayerScreen`；iOS：`dramaHome` 各种写法、`dramaPlayer` | §4 | 展示 SDK 页面的其他方式 |
-| `login` / `setLanguage` | §5 | 用户或应用语言变化 |
-| `setPlayerEventListener` | §6 | 播放事件 |
-| `getDramaList` | §7 | 自己的短剧列表 |
-| `setPlayerControllerListener`；控制器的 `play`、`pause`、`seekTo`、`setPlaybackSpeed`、`setQuality`、`selectEpisode`、`setListener` | §8.1 - 8.2；可运行：实验室 | 用自己的界面控制 SDK 播放页 |
-| `setContentListener` / `setProgressListener` | §8.3；可运行：`customization/PlayerFeed` | 给自己的控件提供内容和进度 |
-| `setControlsHeld` | §8.4；可运行：实验室 | 自己的弹窗盖住播放页时让页面控件保持显示 |
-| `setAutoPlay` / `setAutoAdvance` / `setResumeFromHistory` | §9；可运行：实验室设置 | 播放选项 |
-| `getPlaybackHistory` / `removePlaybackHistory` / `clearPlaybackHistory` | §10 | 继续观看 |
-| `setVideoRegion` / `setInfoRegion` / `setControlsRegion`、`DramaPlayerRegion` | §11；可运行：`customization/` | 替换播放页的部分区域 |
-| `DramaPlayerRegion(autoHide)`、`setRegionVisible`、`state.controlsVisible` | §11；可运行：实验室设置 | 自己控制区域的显示和隐藏 |
-| `createPlayer`；Android `ContentPlayerView` / `createPlayerView`，iOS `playerViewController` | §12 | 在自己的界面里放播放器 |
-| `reportAdRevenue` / `reportPurchaseRevenue` | §13 | 上报应用自己获得的收入 |
-| `showAdConsentIfRequired` | 接入步骤 4（Android）/ 3（iOS）；Android 协程写法：`EditionApiCatalog` C1 | 广告同意 |
-| `setAdEventListener` | `EditionApiCatalog` C2（Android）/ C1（iOS） | 广告事件 |
-| `setUnlockView`、`setUnlockContent`（Android） | `EditionApiCatalog` C3（Android）/ C2（iOS）；可运行：`customization/` 的样式 | 自己的解锁界面 |
-| `unlockWithRewardedAd` / `getRewardedAdProgress` | `EditionApiCatalog` C3 / C2；可运行：`customization/unlock/UnlockFlow` | 自己的解锁界面背后使用 SDK 的广告和奖励 |
+| `initialize` / `start` | 接入步骤 | 初始化并启动 SDK，`start` 成功后才能展示 SDK 页面 |
+| `setLoggingEnabled` | §1 | 打开 SDK 调试日志 |
+| `setStrategy` | §2 | 资源策略（缓存和预加载档位） |
+| `setColorPalette` / `resetColorPalette`、`setSubtitleStyle` / `resetSubtitleStyle` | §3 | 主题颜色、字幕样式 |
+| Android：`openDramaHomePage`、`openDramaPlayerPage`、`createDramaHomeFragment`、`createDramaPlayerFragment`、`DramaHomeScreen`、`DramaPlayerScreen`；iOS：`dramaHome`、`dramaPlayer` | §4 | 用 Activity / Fragment / Compose 或 UIKit / SwiftUI 展示短剧首页和播放器 |
+| `login` / `setLanguage` | §5 | 用户切换、应用语言切换 |
+| `setPlayerEventListener` | §6 | 首帧、播放状态、进度、错误等播放事件 |
+| `getDramaList` | §7 | 获取剧集列表，用自己的界面展示 |
+| `setPlayerControllerListener`；控制器的 `play`、`pause`、`seekTo`、`setPlaybackSpeed`、`setQuality`、`selectEpisode`、`setListener` | §8.1 - 8.2，实验室 | 在自己的界面上控制 SDK 播放页 |
+| `setContentListener` / `setProgressListener` | §8.3，`customization/PlayerFeed` | 给自己的控件提供剧集信息、选集列表和进度 |
+| `setControlsHeld` | §8.4，实验室 | 自己的弹窗盖住播放页时让控件保持显示 |
+| `setAutoPlay` / `setAutoAdvance` / `setResumeFromHistory` | §9，实验室设置 | 自动播放、自动下一集、从播放记录继续 |
+| `getPlaybackHistory` / `removePlaybackHistory` / `clearPlaybackHistory` | §10 | 继续观看列表 |
+| `setVideoRegion` / `setInfoRegion` / `setControlsRegion`、`DramaPlayerRegion` | §11，`customization/` | 用自己的界面替换播放页的画面区、简介区、控制区 |
+| `DramaPlayerRegion(autoHide)`、`setRegionVisible`、`state.controlsVisible` | §11，实验室设置 | 自己控制区域的显示和隐藏 |
+| `createPlayer`；Android `ContentPlayerView` / `createPlayerView`，iOS `playerViewController` | §12 | 不用 SDK 播放页，把播放器放进自己的界面 |
+| `reportAdRevenue` / `reportPurchaseRevenue` | §13 | 回传应用自己的广告和内购收入 |
+| `showAdConsentIfRequired` | Android 接入步骤 4 / iOS 步骤 3；Android 协程写法：`EditionApiCatalog` C1 | Google UMP 广告同意，在 `start` 前调用 |
+| `setAdEventListener` | `EditionApiCatalog` C2（Android）/ C1（iOS） | 广告加载、展示、点击、奖励、收益、关闭等事件 |
+| `setUnlockView`、`setUnlockContent`（Android） | `EditionApiCatalog` C3（Android）/ C2（iOS），`customization/` 的样式 | 用自己的界面替换解锁层 |
+| `unlockWithRewardedAd` / `getRewardedAdProgress` | `EditionApiCatalog` C3 / C2，`customization/unlock/UnlockFlow` | 在自己的解锁界面里调用 SDK 的激励广告，读取今日观看次数 |
 
-Android 源码结构（`app/src/main/kotlin/com/lc/content/sdk/demo/`）：
+## API 使用指引
 
-```
-DemoApplication.kt   第 3 步：初始化
-DemoEdition.kt       凭证、第 4 步：启动（两个版本不同）
-MainActivity.kt      第 5 步：打开 SDK 页面
-catalog/             每个接口及可复制的示例
-customization/       替换播放页的一部分（Compose 和 View）
-lab/                 播放器实验室：在 SDK 播放页上叠加你自己的控制面板
-ui/                  demo 自己的页面，集成时不需要
-```
+1. **先跑通必需步骤**：按「接入到你的应用」的步骤 1 到最后一步复制，`start` 成功后打开短剧首页。只做这一步就能上线基础功能。
+2. **按需查 `SdkApiCatalog`**：每一节写了这个 API 什么时候调用、参数含义和一段可以直接复制的示例，节号见上表。其余 API 都是可选的，不调用时使用 SDK 默认值。
+3. **广告和解锁看 `EditionApiCatalog`**：广告同意、广告事件和自定义解锁界面都在这里。Android 上这些接口是扩展函数，例如 `AndroidContentSdk.setUnlockView(...)` 需要 `import com.lc.content.sdk.setUnlockView`。
+4. **要改播放页界面**：先看 `customization/CustomRegions.kt`（iOS `CustomRegions.swift`），里面是 SDK 调用和说明；再按你的界面技术栈复制 `compose/` 或 `view/`（iOS `SwiftUI/` 或 `UIKit/`）。`PlayerFeed` 把播放器状态转换成界面要画的数据。
+5. **要验证播放控制**：在实验室里点一遍对应按钮，看日志里的调用和事件，再到 `LabActions` 找到对应的 SDK 调用。
 
-iOS 源码结构（`ios/ContentSdkDemo/`）：
+调用规则：
 
-```
-ContentSdkDemoApp.swift   第 2 步：初始化
-DemoEdition.swift         凭证、第 3 步：启动（两个版本不同）
-SdkIntegration.swift      第 4 步：打开 SDK 页面
-Catalog/                  每个接口及可复制的示例
-Customization/            替换播放页的一部分（SwiftUI 和 UIKit）
-Lab/                      播放器实验室：在 SDK 播放页上叠加你自己的控制面板
-UI/                       demo 自己的页面，集成时不需要
-```
+- 所有 API 在主线程调用，回调也在主线程执行。
+- `initialize` 每个进程只调用一次；其余 API 在 `start` 成功后使用。
+- 每类监听器只保留一个，再次设置会替换之前的，传 `null` / `nil` 停止回调。
 
-iOS 使用 SF Symbols，没有需要复制的图标资源。
-
-`app/src/main/res/drawable/ic_*.xml` 里的图标是 Material 图标（Apache License 2.0）。
-
-Android 上商业版独有的接口是扩展函数：`AndroidContentSdk.setUnlockView(...)` 需要 `import com.lc.content.sdk.setUnlockView`。
-
-应用 id：Android `com.lc.content.sdk.demo.commercial`，iOS `com.lc.content.sdk.demo.ios.commercial`。四个 demo（商业版和纯净版、Android 和 iOS）共用同一套 demo 凭证，只能用于 demo；在你自己的 app 里请使用你自己的 App ID / App Secret。
-
-## Demo 环境
+## 运行环境
 
 | Android | |
 |---|---|
@@ -131,3 +149,8 @@ Debug 构建通过 `setLoggingEnabled` 打开 SDK 调试日志，可以看到初
 
 - Android：在 Logcat 中按 `ContentSdk` 筛选。
 - iOS：在 Xcode 控制台中按 `ContentSdk` 筛选。
+
+## 其他
+
+- demo 里的 App ID / App Secret 只能用于 demo，你的应用请使用自己的值。
+- Android `app/src/main/res/drawable/ic_*.xml` 是 Material 图标（Apache License 2.0）；iOS 使用 SF Symbols，没有需要复制的图标资源。
